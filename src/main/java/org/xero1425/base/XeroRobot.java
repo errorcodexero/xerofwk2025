@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.BuildConstants;
 
 public abstract class XeroRobot extends LoggedRobot {
 
@@ -149,13 +148,6 @@ public abstract class XeroRobot extends LoggedRobot {
             Logger.addDataReceiver(new NT4Publisher());
         }
         Logger.addDataReceiver(new WPILOGWriter());
-
-        Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-        Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-        Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-        Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-        Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-
         Logger.start();
     }
 

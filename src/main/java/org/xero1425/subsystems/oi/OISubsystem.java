@@ -20,24 +20,29 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public abstract class OISubsystem extends XeroSubsystem {
     public enum LEDState {
-        On,
-        Off,
-        SlowBlink,
+        On,                     // On and solid
+        Off,                    // Completely off
+        SlowBlink,              
         FastBlink
-    }
+    } ;
 
-    final private double SlowFactor = 0.1 ;
     final private int MaxOIButtons = 32 ;
     final private int MaxLEDs = 16 ;
 
+    //
+    // OI Panel related
+    //
     private OIInputsOutputs ios_ ;
     private OIInputsAutoLogged inputs_ ;
-
-    private boolean enabled_ ;
-    private CommandXboxController ctrl_ ;
     private int oiport_ ;
     private GenericHID oihid_ ;
 
+    //
+    // Game pad related
+    //
+    private boolean enabled_ ;
+    private CommandXboxController ctrl_ ;
+    private int gp_port_ ;
     private boolean isRumbling ;
     private double rumble_ ;
     private double stop_rumble_time_ ;
@@ -54,6 +59,7 @@ public abstract class OISubsystem extends XeroSubsystem {
             inputs_ = new OIInputsAutoLogged() ;
         }
         
+        gp_port_ = gp ;
         ctrl_ = new CommandXboxController(gp) ;
 
         oiport_ = oi ;
@@ -63,19 +69,29 @@ public abstract class OISubsystem extends XeroSubsystem {
         buttons_ = new HashMap<>();
     }
 
-    public void enable() {
+    //
+    // This method enables the gamepad for driving
+    //
+    public void enableDriving() {
         enabled_ = true ;
     }
 
-    public void disable() {
+    //
+    // This method disabled the game pad for driving
+    //
+    public void disableDriving() {
         enabled_ = false ;
     }
 
+    //
+    // Set the LED state for a specific LED
+    //
     public void setLEDState(int led, LEDState st) {
         if (ios_ != null) {
             ios_.setLEDState(led, st) ;
         }
     }
+
 
     @Override
     public void periodic() {
@@ -227,7 +243,7 @@ public abstract class OISubsystem extends XeroSubsystem {
             ret = supplier.getAsDouble() ;
 
             if (getXBoxHIDDevice().getXButton()) {
-                ret = ret * SlowFactor ;
+                ret = ret * frc.robot.constants.SwerveConstants.SlowFactor ;
             }
             else {
                 ret = Math.signum(ret) * ret * ret;

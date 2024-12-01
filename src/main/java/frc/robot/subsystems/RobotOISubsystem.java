@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import org.xero1425.base.XeroRobot;
 import org.xero1425.subsystems.oi.OISubsystem;
+import frc.robot.constants.OIConstants;
 
 //
 // This is a template for an OI class

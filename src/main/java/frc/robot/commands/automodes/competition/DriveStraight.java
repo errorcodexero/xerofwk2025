@@ -10,7 +10,7 @@ public class DriveStraight extends XeroAutoCommand {
     
     private final static String desc = "This auto mode drives straight after a 10 second delay" ;
     private final static double maxv = 4.0 ;
-    private final static double maxa = 4.0 ;
+    private final static double maxa = 1.0 ;
 
     private boolean done_ ;
     
@@ -26,8 +26,8 @@ public class DriveStraight extends XeroAutoCommand {
         // Drive straight
         //Pose2dWithRotation dest = new Pose2dWithRotation(3.89, 0.0, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) ;
 
-        // Drive straight - corner to corner
-        Pose2dWithRotation dest = new Pose2dWithRotation(7.45, 3.99, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) ;
+        // Drive straight - corner to corner 827 - 81 = 746 , 403 
+        Pose2dWithRotation dest = new Pose2dWithRotation(7.46, 4.03, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) ;
 
 
         // Drive straight with rotation
@@ -60,6 +60,7 @@ public class DriveStraight extends XeroAutoCommand {
 
     @Override
     public void end(boolean interrupted) {
+        getRobot().getContainer().getDriveBase().stopPath() ;
     }
 
     @Override

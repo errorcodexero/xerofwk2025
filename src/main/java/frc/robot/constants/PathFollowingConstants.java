@@ -1,4 +1,4 @@
-package frc.robot.generated;
+package frc.robot.constants;
 
 public class PathFollowingConstants {
     public static final double kXYTolerance = 0.05 ;

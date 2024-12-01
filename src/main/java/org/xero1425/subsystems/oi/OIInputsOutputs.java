@@ -11,11 +11,20 @@ public interface OIInputsOutputs {
     }
 
     public default void updateInputs(OIInputs inputs) {
+        //
+        // TODO: write me
+        //
     }
 
     public default void updateLEDs() {
+        //
+        // TODO: write me
+        //
     }
 
     public default void setLEDState(int index, OISubsystem.LEDState st) {
+        //
+        // TODO: write me
+        //
     }
 }

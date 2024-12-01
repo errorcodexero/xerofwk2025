@@ -28,8 +28,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants;
-import frc.robot.generated.SwerveConstants;
+import frc.robot.constants.PathFollowingConstants ;
+import frc.robot.constants.SwerveConstants;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -179,26 +179,37 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         }
     }
 
+    public void stopPath() {
+        this.stopPath(true) ;
+    }
+
+    public void stopPath(boolean stopdb) {
+        if (stopdb) {
+            setControl(new ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds())) ;
+        }
+        follower_ = null ;
+    }
+
     private HolonomicPathFollower.Config createHolonimicPathFollowerConfig() {
         HolonomicPathFollower.Config cfg = new HolonomicPathFollower.Config() ;
 
         cfg.max_rot_velocity = SwerveConstants.kMaxRotationalSpeed ;
         cfg.max_rot_acceleration = SwerveConstants.kMaxRotationalAccel ;
 
-        cfg.rot_p = Constants.PathFollowing.RotCtrl.kP ;
-        cfg.rot_i = Constants.PathFollowing.RotCtrl.kI ;
-        cfg.rot_d = Constants.PathFollowing.RotCtrl.kD ;
+        cfg.rot_p = PathFollowingConstants.RotCtrl.kP ;
+        cfg.rot_i = PathFollowingConstants.RotCtrl.kI ;
+        cfg.rot_d = PathFollowingConstants.RotCtrl.kD ;
 
-        cfg.x_d = Constants.PathFollowing.XCtrl.kD ;
-        cfg.x_i = Constants.PathFollowing.XCtrl.kI ;
-        cfg.x_p = Constants.PathFollowing.XCtrl.kP ;
+        cfg.x_d = PathFollowingConstants.XCtrl.kD ;
+        cfg.x_i = PathFollowingConstants.XCtrl.kI ;
+        cfg.x_p = PathFollowingConstants.XCtrl.kP ;
 
-        cfg.y_d = Constants.PathFollowing.YCtrl.kD ;
-        cfg.y_i = Constants.PathFollowing.YCtrl.kI ;
-        cfg.y_p = Constants.PathFollowing.YCtrl.kP ;
+        cfg.y_d = PathFollowingConstants.YCtrl.kD ;
+        cfg.y_i = PathFollowingConstants.YCtrl.kI ;
+        cfg.y_p = PathFollowingConstants.YCtrl.kP ;
 
-        cfg.xytolerance = Constants.PathFollowing.kXYTolerance ;
-        cfg.rot_tolerance = Rotation2d.fromDegrees(Constants.PathFollowing.kAngleTolerance) ;
+        cfg.xytolerance = PathFollowingConstants.kXYTolerance ;
+        cfg.rot_tolerance = Rotation2d.fromDegrees(PathFollowingConstants.kAngleTolerance) ;
 
         cfg.pose_supplier = () -> getState().Pose ;
         cfg.output_consumer = (ChassisSpeeds spd) -> { setControl(new ApplyRobotSpeeds().withSpeeds(spd)) ; } ;

@@ -141,7 +141,7 @@ public class HolonomicPathFollower {
 
     private void executeDriveTo() {
         if (driving_) {
-            Logger.recordOutput("paths:to", path_name_) ;
+            // Logger.recordOutput("paths:to", path_name_) ;
 
             double elapsed = Timer.getFPGATimestamp() - start_time_ ;
 
@@ -149,9 +149,9 @@ public class HolonomicPathFollower {
             Trajectory.State st = traj_.sample(elapsed) ;
             Rotation2d rot = rotatationValue(elapsed) ;
 
-            if (st != null && st.poseMeters != null) {
-                Logger.recordOutput("paths:target", st.poseMeters) ;
-            }
+            // if (st != null && st.poseMeters != null) {
+            //     Logger.recordOutput("paths:target", st.poseMeters) ;
+            // }
 
             ChassisSpeeds spd = controller_.calculate(here, st, rot) ;
             output_.accept(spd);

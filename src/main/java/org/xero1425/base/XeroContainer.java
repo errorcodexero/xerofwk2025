@@ -13,9 +13,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.generated.SwerveConstants;
-import frc.robot.generated.TunerConstantsCompBot;
-import frc.robot.generated.TunerConstantsPracticeBot;
+import frc.robot.constants.SwerveConstants;
+import frc.robot.constants.TunerConstantsCompBot;
+import frc.robot.constants.TunerConstantsPracticeBot;
 
 public class XeroContainer {
     private static double MaxSpeed = 4.61 ;
@@ -52,7 +52,7 @@ public class XeroContainer {
     }
 
     private void createDriveBase() {
-        if (robot_.isPracticeBot()) {
+        if (robot_.isPracticeBot() || true) {
             //
             // Create the drivebase
             //
@@ -96,9 +96,9 @@ public class XeroContainer {
         if (alliance.isPresent()) {
             Pose2d pose;
             if (alliance.get() == Alliance.Red) {
-                pose = new Pose2d(0, 0, Rotation2d.fromDegrees(180.0));
-            } else {
                 pose = new Pose2d(0, 0, Rotation2d.fromDegrees(0.0));
+            } else {
+                pose = new Pose2d(0, 0, Rotation2d.fromDegrees(180.0));
             }
             db_.resetPose(pose);
         } else {
