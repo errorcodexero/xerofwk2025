@@ -96,9 +96,9 @@ public class XeroContainer {
         if (alliance.isPresent()) {
             Pose2d pose;
             if (alliance.get() == Alliance.Red) {
-                pose = new Pose2d(0, 0, Rotation2d.fromDegrees(0.0));
-            } else {
                 pose = new Pose2d(0, 0, Rotation2d.fromDegrees(180.0));
+            } else {
+                pose = new Pose2d(0, 0, Rotation2d.fromDegrees(0.0));
             }
             db_.resetPose(pose);
         } else {
@@ -112,9 +112,9 @@ public class XeroContainer {
         //
         db_.setDefaultCommand(
                 db_.applyRequest(() -> drive_
-                        .withVelocityX(oi_.getLeftY() * MaxSpeed)
-                        .withVelocityY(oi_.getLeftX() * MaxSpeed)
-                        .withRotationalRate(oi_.getRightX() * MaxAngularRate)
+                        .withVelocityX(-oi_.getLeftY() * MaxSpeed)
+                        .withVelocityY(-oi_.getLeftX() * MaxSpeed)
+                        .withRotationalRate(-oi_.getRightX() * MaxAngularRate)
                 )
         );
 
