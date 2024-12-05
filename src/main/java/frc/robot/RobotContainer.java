@@ -5,9 +5,11 @@ import org.xero1425.base.XeroRobot;
 
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.RobotOISubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer extends XeroContainer {
     private IntakeSubsystem intake_ ;
+    private VisionSubsystem vision_ ;
 
     public RobotContainer(XeroRobot robot) {
         //
@@ -17,9 +19,15 @@ public class RobotContainer extends XeroContainer {
         //
         super(robot, new RobotOISubsystem(robot)) ;
 
-        //
-        // TODO: create additional subsystems here
-        //
-        // intake_ = new IntakeSubsystem(robot) ;
+        vision_ = new VisionSubsystem(robot, "tags") ;
+        intake_ = new IntakeSubsystem(robot) ;
+    }
+
+    public IntakeSubsystem getIntake() {
+        return intake_ ;
+    }
+
+    public VisionSubsystem getVision() {
+        return vision_ ;
     }
 }

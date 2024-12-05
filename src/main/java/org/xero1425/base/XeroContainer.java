@@ -52,7 +52,7 @@ public class XeroContainer {
     }
 
     private void createDriveBase() {
-        if (robot_.isPracticeBot() || true) {
+        if (robot_.isPracticeBot()) {
             //
             // Create the drivebase
             //
