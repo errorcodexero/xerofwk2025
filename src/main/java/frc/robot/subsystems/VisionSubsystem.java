@@ -10,6 +10,7 @@ import org.xero1425.base.LimelightHelpers.PoseEstimate;
 import org.xero1425.misc.SettingsValue;
 import org.xero1425.subsystems.swerve.CommandSwerveDrivetrain;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.Matrix;
@@ -70,9 +71,8 @@ public class VisionSubsystem extends XeroSubsystem {
             VisionEstimate est = useSimpleApproach() ;
             if (est != null) {
                 Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(est.xyStds, est.xyStds, est.thetaStds) ;
-                double errval = Math.abs(est.timeStamp - Timer.getFPGATimestamp()) ;
-                Logger.recordOutput("tserr", errval) ;
-                dt.addVisionMeasurement(est.pose, est.timeStamp, visionMeasurementStdDevs) ;
+                double ts = Utils.fpgaToCurrentTime(est.timeStamp) ;
+                dt.addVisionMeasurement(est.pose, ts, visionMeasurementStdDevs) ;
             }
         }
 
