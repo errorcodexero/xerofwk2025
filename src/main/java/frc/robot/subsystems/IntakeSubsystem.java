@@ -18,6 +18,10 @@ public class IntakeSubsystem extends XeroSubsystem {
         super(robot,"intake") ;
 
         try {
+            //
+            // This just keeps these motors in brake mode so they don't 
+            // bounce around.
+            //
             feeder_ = TalonFXFactory.getFactory().createTalonFX(1, false) ;
             tilt_ = TalonFXFactory.getFactory().createTalonFX(5, false) ;
             updown_ = TalonFXFactory.getFactory().createTalonFX(2, false) ;

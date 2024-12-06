@@ -60,12 +60,15 @@ public class XeroContainer {
             //
             // Create the drivebase
             //
+            Matrix<N3, N1> odomStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
+            Matrix<N3, N1> visionStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
             db_ = new CommandSwerveDrivetrain(
-                    TunerConstantsPracticeBot.DrivetrainConstants,
+                TunerConstantsPracticeBot.DrivetrainConstants, -1,
+                    odomStdDev, visionStdDev,                     
                     TunerConstantsPracticeBot.FrontLeft,
                     TunerConstantsPracticeBot.FrontRight,
                     TunerConstantsPracticeBot.BackLeft,
-                    TunerConstantsPracticeBot.BackRight);
+                    TunerConstantsPracticeBot.BackRight);                    
 
             telemetry_ = new Telemetry(TunerConstantsCompBot.kSpeedAt12Volts.magnitude());
 
@@ -74,15 +77,6 @@ public class XeroContainer {
                     .withRotationalDeadband(SwerveConstants.kMaxRotationalSpeed * 0.05)
                     .withDriveRequestType(DriveRequestType.Velocity);
         } else {
-            //
-            // Create the drivebase
-            //
-            // db_ = new CommandSwerveDrivetrain(
-            //         TunerConstantsCompBot.DrivetrainConstants,
-            //         TunerConstantsCompBot.FrontLeft,
-            //         TunerConstantsCompBot.FrontRight,
-            //         TunerConstantsCompBot.BackLeft,
-            //         TunerConstantsCompBot.BackRight);
 
             Matrix<N3, N1> odomStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
             Matrix<N3, N1> visionStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
