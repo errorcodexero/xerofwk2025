@@ -9,6 +9,7 @@ import org.xero1425.base.XeroRobot;
 import org.xero1425.simulator.engine.ModelFactory;
 import org.xero1425.simulator.engine.SimulationEngine;
 import frc.robot.commands.automodes.competition.DriveStraight;
+import frc.robot.commands.automodes.competition.VisionTest;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -60,6 +61,7 @@ public class Robot extends XeroRobot {
 
     @Override
     public void createCompetitionAutoModes() {
+        addAutoMode(new VisionTest(this)) ;
         addAutoMode(new DriveStraight(this));
     }
 

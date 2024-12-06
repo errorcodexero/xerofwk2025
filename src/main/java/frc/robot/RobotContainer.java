@@ -19,7 +19,7 @@ public class RobotContainer extends XeroContainer {
         //
         super(robot, new RobotOISubsystem(robot)) ;
 
-        vision_ = new VisionSubsystem(robot, "tags") ;
+        vision_ = new VisionSubsystem(robot, "") ;
         intake_ = new IntakeSubsystem(robot) ;
     }
 

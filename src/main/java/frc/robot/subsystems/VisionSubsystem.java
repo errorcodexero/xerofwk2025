@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
+import org.littletonrobotics.junction.Logger;
 import org.xero1425.base.LimelightHelpers;
 import org.xero1425.base.XeroRobot;
 import org.xero1425.base.XeroSubsystem;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.commons.PolynomialRegression;
 
 public class VisionSubsystem extends XeroSubsystem {
@@ -68,6 +70,8 @@ public class VisionSubsystem extends XeroSubsystem {
             VisionEstimate est = useSimpleApproach() ;
             if (est != null) {
                 Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(est.xyStds, est.xyStds, est.thetaStds) ;
+                double errval = Math.abs(est.timeStamp - Timer.getFPGATimestamp()) ;
+                Logger.recordOutput("tserr", errval) ;
                 dt.addVisionMeasurement(est.pose, est.timeStamp, visionMeasurementStdDevs) ;
             }
         }
@@ -87,7 +91,7 @@ public class VisionSubsystem extends XeroSubsystem {
         VisionEstimate ret = null ;
 
         PoseEstimate poseest = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(llname_);
-        if (poseest.timestampSeconds != lastTimestamp) {
+        if (poseest != null && poseest.timestampSeconds != lastTimestamp) {
             double xyStdDev ;
             double thetaStdDev ;
 

@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
 import org.xero1425.base.HolonomicPathFollower;
 import org.xero1425.math.Pose2dWithRotation;
 
@@ -16,7 +17,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -287,7 +287,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             if (!follower_.isDriving()) {
                 follower_ = null ;
             }
-        }        
+        }
+
+        Pose2d p = this.getState().Pose ;
+        Logger.recordOutput("px", p.getX()) ;
+        Logger.recordOutput("py", p.getY()) ;
+        Logger.recordOutput("angle", p.getRotation().getDegrees()) ;
     }
 
     private void startSimThread() {

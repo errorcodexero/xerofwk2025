@@ -9,8 +9,12 @@ import org.xero1425.subsystems.swerve.Telemetry;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.SwerveConstants;
@@ -73,8 +77,18 @@ public class XeroContainer {
             //
             // Create the drivebase
             //
+            // db_ = new CommandSwerveDrivetrain(
+            //         TunerConstantsCompBot.DrivetrainConstants,
+            //         TunerConstantsCompBot.FrontLeft,
+            //         TunerConstantsCompBot.FrontRight,
+            //         TunerConstantsCompBot.BackLeft,
+            //         TunerConstantsCompBot.BackRight);
+
+            Matrix<N3, N1> odomStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
+            Matrix<N3, N1> visionStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
             db_ = new CommandSwerveDrivetrain(
-                    TunerConstantsCompBot.DrivetrainConstants,
+                    TunerConstantsCompBot.DrivetrainConstants, -1,
+                    odomStdDev, visionStdDev,                     
                     TunerConstantsCompBot.FrontLeft,
                     TunerConstantsCompBot.FrontRight,
                     TunerConstantsCompBot.BackLeft,
