@@ -182,21 +182,4 @@ public class TunerConstantsCompBot {
             kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset,
             kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted, kBackRightCANcoderInverted);
 
-    /**
-     * Creates a CommandSwerveDrivetrain instance.
-     * This should only be called once in your robot program,.
-     */
-    public static CommandSwerveDrivetrain createDrivetrain() {
-        double odometryUpdateFrequency = 200.0 ;
-        Matrix<N3, N1> odometryStandardDeviation = VecBuilder.fill(0.01, 0.01, 0.002);
-        Matrix<N3, N1> visionStandardDeviation = VecBuilder.fill(0.01, 0.01, 0.002);
-
-        return new CommandSwerveDrivetrain(
-            DrivetrainConstants, 
-            odometryUpdateFrequency,
-            odometryStandardDeviation,
-            visionStandardDeviation,
-            FrontLeft, FrontRight, BackLeft, BackRight
-        );
-    }
 }
