@@ -142,8 +142,6 @@ public abstract class XeroRobot extends LoggedRobot {
     }
 
     private void enableAdvantageKitLogger(boolean logToNetworkTables) {
-        Logger.disableDeterministicTimestamps();
-
         if (XeroRobot.isSimulation() || logToNetworkTables) {
             Logger.addDataReceiver(new NT4Publisher());
         }

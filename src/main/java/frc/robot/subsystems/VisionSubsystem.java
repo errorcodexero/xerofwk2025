@@ -38,7 +38,7 @@ public class VisionSubsystem extends XeroSubsystem {
     }
 
     private String llname_ ;
-    private boolean enabled_ = true ;
+    private boolean enabled_ = false ;
     private double lastTimestamp = 0.0 ;
 
 
