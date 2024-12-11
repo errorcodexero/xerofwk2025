@@ -248,7 +248,7 @@ public abstract class XeroRobot extends LoggedRobot {
                     }
                 }
 
-                ShuffleboardTab tab = Shuffleboard.getTab("AutoMode");
+                ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
                 chosen_ = tab.add("Auto Mode Selected", auto_mode_.toString()).withSize(2, 1).withPosition(3, 0)
                         .getEntry();
                 desc_ = tab.add("Auto Mode Description", auto_mode_.toString()).withSize(5, 2).withPosition(0, 1)

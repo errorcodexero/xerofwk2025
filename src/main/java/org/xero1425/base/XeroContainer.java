@@ -63,7 +63,7 @@ public class XeroContainer {
             Matrix<N3, N1> odomStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
             Matrix<N3, N1> visionStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
             db_ = new CommandSwerveDrivetrain(
-                TunerConstantsPracticeBot.DrivetrainConstants, -1,
+                TunerConstantsPracticeBot.DrivetrainConstants, 0,
                     odomStdDev, visionStdDev,                     
                     TunerConstantsPracticeBot.FrontLeft,
                     TunerConstantsPracticeBot.FrontRight,
@@ -81,7 +81,7 @@ public class XeroContainer {
             Matrix<N3, N1> odomStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
             Matrix<N3, N1> visionStdDev = VecBuilder.fill(0.1, 0.1, 0.1) ;
             db_ = new CommandSwerveDrivetrain(
-                    TunerConstantsCompBot.DrivetrainConstants, -1,
+                    TunerConstantsCompBot.DrivetrainConstants, 0,
                     odomStdDev, visionStdDev,                     
                     TunerConstantsCompBot.FrontLeft,
                     TunerConstantsCompBot.FrontRight,

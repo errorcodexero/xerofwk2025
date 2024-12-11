@@ -16,9 +16,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.commons.PolynomialRegression;
 
 public class VisionSubsystem extends XeroSubsystem {
@@ -38,10 +39,8 @@ public class VisionSubsystem extends XeroSubsystem {
     }
 
     private String llname_ ;
-    private boolean enabled_ = false ;
+    private boolean enabled_ ;
     private double lastTimestamp = 0.0 ;
-
-
 
     public VisionSubsystem(XeroRobot robot, String llname) {
         super(robot, "vision") ;
@@ -68,6 +67,10 @@ public class VisionSubsystem extends XeroSubsystem {
 
         if (enabled_) {
             CommandSwerveDrivetrain dt = getRobot().getContainer().getDriveBase() ;
+
+            Rotation2d robotHeading = dt.getState().Pose.getRotation();
+            LimelightHelpers.SetRobotOrientation(llname_, robotHeading.getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0) ;
+
             VisionEstimate est = useSimpleApproach() ;
             if (est != null) {
                 Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(est.xyStds, est.xyStds, est.thetaStds) ;
@@ -92,22 +95,34 @@ public class VisionSubsystem extends XeroSubsystem {
 
         PoseEstimate poseest = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(llname_);
         if (poseest != null && poseest.timestampSeconds != lastTimestamp) {
+
             double xyStdDev ;
             double thetaStdDev ;
 
             // The units here are unclear
             double avgdist = poseest.avgTagDist ;
 
-            if (poseest.tagCount > 1) {
-                xyStdDev = 0.001 ;
-                thetaStdDev = 9999 ;
-            }
-            else {
-                xyStdDev = 0.0131 * avgdist * avgdist - 0.0278 * avgdist ;
-                thetaStdDev = 9999 ;
-            }
+            if (poseest.tagCount != 0) {
+                if (poseest.tagCount > 1) {
+                    xyStdDev = 0.001 ;
+                    thetaStdDev = 9999 ;
+                }
+                else {
+                    xyStdDev = 0.0131 * avgdist * avgdist - 0.0278 * avgdist ;
+                    thetaStdDev = 9999 ;
+                }
 
-            ret = new VisionEstimate(poseest.pose, poseest.timestampSeconds, xyStdDev, thetaStdDev) ;
+                ret = new VisionEstimate(poseest.pose, poseest.timestampSeconds, xyStdDev, thetaStdDev) ;
+                Logger.recordOutput("limelight/avgdist", avgdist) ;
+                Logger.recordOutput("limelight/xyStdDev", xyStdDev);
+                Logger.recordOutput("limelight/angularStdDev", thetaStdDev);
+                Logger.recordOutput("limelight/ts", poseest.timestampSeconds);
+                Logger.recordOutput("limelight/tagcnt", poseest.tagCount) ;
+                Logger.recordOutput("limelight/tx", poseest.pose.getX()) ;
+                Logger.recordOutput("limelight/ty", poseest.pose.getY()) ;
+
+                lastTimestamp = poseest.timestampSeconds;
+            }
         }
 
         return ret ;

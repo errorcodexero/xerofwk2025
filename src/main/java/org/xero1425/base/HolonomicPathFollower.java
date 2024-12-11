@@ -139,22 +139,29 @@ public class HolonomicPathFollower {
         executeDriveTo() ;
     }
 
+    private double clamp(double value, double minval, double maxval) {
+        return Math.max(Math.min(maxval, value), minval) ;
+    }
+
     private void executeDriveTo() {
         if (driving_) {
-            // Logger.recordOutput("paths:to", path_name_) ;
-
             double elapsed = Timer.getFPGATimestamp() - start_time_ ;
 
             Pose2d here = pose_.get() ;
             Trajectory.State st = traj_.sample(elapsed) ;
             Rotation2d rot = rotatationValue(elapsed) ;
 
-            // if (st != null && st.poseMeters != null) {
-            //     Logger.recordOutput("paths:target", st.poseMeters) ;
-            // }
+            if (st != null && st.poseMeters != null) {
+                // Pose2d p = new Pose2d(st.poseMeters.getX(), st.poseMeters.getY(), st.poseMeters.getRotation()) ; 
+                // Logger.recordOutput("paths/target", p) ;
+            }
 
             ChassisSpeeds spd = controller_.calculate(here, st, rot) ;
-            output_.accept(spd);
+            double xspd = this.clamp(spd.vxMetersPerSecond, -1.0, 1.0) ;
+            double yspd = this.clamp(spd.vyMetersPerSecond, -1.0, 1.0) ;
+            double omega = this.clamp(spd.omegaRadiansPerSecond, -0.5, 0.5);
+            ChassisSpeeds nspd = new ChassisSpeeds(xspd, yspd, omega) ;
+            output_.accept(nspd);
 
             if (elapsed >= traj_.getTotalTimeSeconds()) {
                 if (controller_.atReference()) {

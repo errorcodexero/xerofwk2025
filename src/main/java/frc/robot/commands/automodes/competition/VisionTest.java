@@ -4,15 +4,16 @@ import org.xero1425.base.XeroAutoCommand;
 import org.xero1425.base.XeroRobot;
 import org.xero1425.math.Pose2dWithRotation;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.RobotContainer;
 
 public class VisionTest extends XeroAutoCommand {
     
     private final static String desc = "This auto mode is used to test vision accuracy" ;
-    private final static double max1v = 4.0 ;
+    private final static double max1v = 1.0 ;
     private final static double max1a = 1.0 ;
-    private final static double max2v = 4.0 ;
+    private final static double max2v = 1.0 ;
     private final static double max2a = 1.0 ;
 
     private Pose2dWithRotation dest1_ ;
@@ -33,7 +34,9 @@ public class VisionTest extends XeroAutoCommand {
         container.getVision().enable() ;
 
         dest1_ = new Pose2dWithRotation(7.78, 7.48, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) ;
-        dest2_ = new Pose2dWithRotation(2.5, 5.5, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) ;
+        dest2_ = new Pose2dWithRotation(2.5, 5.5, Rotation2d.fromDegrees(180), Rotation2d.fromDegrees(0)) ;
+
+        getRobot().getContainer().getDriveBase().resetPose(new Pose2d(1.3, 5.77, Rotation2d.fromDegrees(0.0))) ;
 
         //
         // Drive the first path
@@ -50,6 +53,7 @@ public class VisionTest extends XeroAutoCommand {
             if (first_) {
                 getRobot().getContainer().getDriveBase().driveTo("test", null, dest2_, max2v, max2a, 
                                                                 0.0, 0.0, 0.0) ;
+                first_ = false ;
             }
             else {
                 RobotContainer container = (RobotContainer)getRobot().getContainer();
