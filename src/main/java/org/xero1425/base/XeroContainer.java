@@ -15,15 +15,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import static edu.wpi.first.units.Units.*;
 import frc.robot.constants.SwerveConstants;
 import frc.robot.constants.TunerConstantsCompBot;
 import frc.robot.constants.TunerConstantsPracticeBot;
 
 public class XeroContainer {
-    private static double MaxSpeed = 4.61 ;
-    private static double MaxAngularRate = 720;
+    private static LinearVelocity MaxSpeed = MetersPerSecond.of(4.61) ;
+    private static AngularVelocity MaxAngularRate = DegreesPerSecond.of(720) ;
 
     private XeroRobot robot_;
 
@@ -120,9 +124,9 @@ public class XeroContainer {
         //
         db_.setDefaultCommand(
                 db_.applyRequest(() -> drive_
-                        .withVelocityX(-oi_.getLeftY() * MaxSpeed)
-                        .withVelocityY(-oi_.getLeftX() * MaxSpeed)
-                        .withRotationalRate(-oi_.getRightX() * MaxAngularRate)
+                        .withVelocityX(MaxSpeed.times(-oi_.getLeftY()))
+                        .withVelocityY(MaxSpeed.times(-oi_.getLeftX()))
+                        .withRotationalRate(MaxAngularRate.times(-oi_.getRightX()))
                 )
         );
 

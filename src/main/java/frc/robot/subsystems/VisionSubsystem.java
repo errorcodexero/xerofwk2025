@@ -17,7 +17,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.commons.PolynomialRegression;
@@ -55,6 +54,10 @@ public class VisionSubsystem extends XeroSubsystem {
 
     public void disable() {
         enabled_ = false ;
+    }
+
+    public boolean isEnabled() {
+        return enabled_ ;
     }
 
     //
@@ -109,6 +112,7 @@ public class VisionSubsystem extends XeroSubsystem {
                 }
                 else {
                     xyStdDev = 0.0131 * avgdist * avgdist - 0.0278 * avgdist ;
+                    xyStdDev = 0.001 ;
                     thetaStdDev = 9999 ;
                 }
 

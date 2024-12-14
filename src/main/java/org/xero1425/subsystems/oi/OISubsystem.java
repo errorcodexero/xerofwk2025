@@ -155,34 +155,18 @@ public abstract class OISubsystem extends XeroSubsystem {
     }
 
     public double getLeftX() {
-        if (!enabled_) {
-            return 0.0 ;
-        }
-
         return getStickValue(()->ctrl_.getHID().getLeftX()) ;
     }
 
     public double getLeftY() {
-        if (!enabled_) {
-            return 0.0 ;
-        }
-
         return getStickValue(()->ctrl_.getHID().getLeftY()) ;
     }
 
     public double getRightX() {
-        if (!enabled_) {
-            return 0.0 ;
-        }
-
         return getStickValue(()->ctrl_.getHID().getRightX()) ;
     }
 
     public double getRightY() {
-        if (!enabled_) {
-            return 0.0; 
-        }
-
         return getStickValue(()->ctrl_.getHID().getRightY()) ;
     }    
 

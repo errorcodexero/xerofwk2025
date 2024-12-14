@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
 import org.xero1425.math.Pose2dWithRotation;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -23,6 +22,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 
 public class HolonomicPathFollower {
+    private static double maxTransV = 2.0 ;
+
     public static class Config {
         public double max_rot_velocity ;
         public double max_rot_acceleration ;
@@ -157,8 +158,8 @@ public class HolonomicPathFollower {
             }
 
             ChassisSpeeds spd = controller_.calculate(here, st, rot) ;
-            double xspd = this.clamp(spd.vxMetersPerSecond, -1.0, 1.0) ;
-            double yspd = this.clamp(spd.vyMetersPerSecond, -1.0, 1.0) ;
+            double xspd = this.clamp(spd.vxMetersPerSecond, -maxTransV, maxTransV) ;
+            double yspd = this.clamp(spd.vyMetersPerSecond, -maxTransV, maxTransV) ;
             double omega = this.clamp(spd.omegaRadiansPerSecond, -0.5, 0.5);
             ChassisSpeeds nspd = new ChassisSpeeds(xspd, yspd, omega) ;
             output_.accept(nspd);
