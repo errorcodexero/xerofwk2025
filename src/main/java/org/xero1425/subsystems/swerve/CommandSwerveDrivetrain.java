@@ -290,9 +290,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         }
 
         Pose2d p = this.getState().Pose ;
-        Logger.recordOutput("px", p.getX()) ;
-        Logger.recordOutput("py", p.getY()) ;
-        Logger.recordOutput("angle", p.getRotation().getDegrees()) ;
+        Logger.recordOutput("db/pose", p) ;
+        Logger.recordOutput("db/angle", p.getRotation().getDegrees()) ;
+        Logger.recordOutput("db/module_states", this.getState().ModuleStates) ;
+        Logger.recordOutput("db/module_targets", this.getState().ModuleTargets) ;
+
     }
 
     private void startSimThread() {

@@ -75,7 +75,7 @@ public class VisionSubsystem extends XeroSubsystem {
             LimelightHelpers.SetRobotOrientation(llname_, robotHeading.getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0) ;
 
             VisionEstimate est = useSimpleApproach() ;
-            if (est != null) {
+            if (est != null && est.pose.getTranslation().getNorm() != 0) {
                 Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(est.xyStds, est.xyStds, est.thetaStds) ;
                 double ts = Utils.fpgaToCurrentTime(est.timeStamp) ;
                 dt.addVisionMeasurement(est.pose, ts, visionMeasurementStdDevs) ;
@@ -97,6 +97,9 @@ public class VisionSubsystem extends XeroSubsystem {
         VisionEstimate ret = null ;
 
         PoseEstimate poseest = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(llname_);
+        if (poseest != null) {
+            Logger.recordOutput("limelight/pose", poseest.pose) ;
+        }
         if (poseest != null && poseest.timestampSeconds != lastTimestamp) {
 
             double xyStdDev ;
@@ -107,13 +110,14 @@ public class VisionSubsystem extends XeroSubsystem {
 
             if (poseest.tagCount != 0) {
                 if (poseest.tagCount > 1) {
-                    xyStdDev = 0.001 ;
+                    // xyStdDev = 0.001 ;
+                    xyStdDev = 0.7;
                     thetaStdDev = 9999 ;
                 }
                 else {
-                    xyStdDev = 0.0131 * avgdist * avgdist - 0.0278 * avgdist ;
-                    xyStdDev = 0.001 ;
-                    thetaStdDev = 9999 ;
+                    // xyStdDev = 0.0131 * avgdist * avgdist - 0.0278 * avgdist ;
+                    xyStdDev = 9999;
+                    thetaStdDev = 9999;
                 }
 
                 ret = new VisionEstimate(poseest.pose, poseest.timestampSeconds, xyStdDev, thetaStdDev) ;

@@ -31,10 +31,10 @@ public class VisionTest extends XeroAutoCommand {
         first_ = true;
 
         RobotContainer container = (RobotContainer)getRobot().getContainer();
-        //dest1_ = new Pose2dWithRotation(7.78, 7.87, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) ;
-        //dest2_ = new Pose2dWithRotation(2.5, 5.5, Rotation2d.fromDegrees(180), Rotation2d.fromDegrees(0)) ;
-        dest1_ = new Pose2dWithRotation(2.5, 2.5, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(0)) ;
-        dest2_ = new Pose2dWithRotation(2.5, 5.5, Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(0)) ;
+        dest1_ = new Pose2dWithRotation(7.78, 7.87, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) ;
+        dest2_ = new Pose2dWithRotation(2.5, 5.5, Rotation2d.fromDegrees(180), Rotation2d.fromDegrees(0)) ;
+        //dest1_ = new Pose2dWithRotation(2.5, 2.5, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(0)) ;
+        //dest2_ = new Pose2dWithRotation(2.5, 5.5, Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(0)) ;
 
         if (!container.getVision().isEnabled()) {
             getRobot().getContainer().getDriveBase().resetPose(new Pose2d(1.46, 5.65, Rotation2d.fromDegrees(0.0))) ;
