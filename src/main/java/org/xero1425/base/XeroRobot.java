@@ -84,12 +84,6 @@ public abstract class XeroRobot extends LoggedRobot {
 
     protected abstract void addRobotSimulationModels();
 
-    protected abstract void robotSpecificBindings();
-
-    protected abstract String getCharSubsystem();
-
-    protected abstract String getCharMotor();
-
     protected abstract XeroContainer createContainer() ;
 
     public XeroContainer getContainer() {

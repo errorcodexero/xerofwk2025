@@ -29,15 +29,10 @@ public class Robot extends XeroRobot {
 
     /**
      * This function is run when the robot is first started up and should be used
-     * for any
-     * initialization code.
+     * for any initialization code.
      */
     @Override
     public void robotInit() {
-        //
-        // The base class will create the generic subsystems based on the methods you supply.
-        // It assumes an XBox controller for now.
-        //
         super.robotInit() ;
     }
 
@@ -79,18 +74,5 @@ public class Robot extends XeroRobot {
     public void addRobotSimulationModels() {
         ModelFactory factory = SimulationEngine.getInstance().getModelFactory();
         factory.registerModel("robot-oi", "frc.models.RobotOIModel");         
-    }
-
-    @Override
-    protected void robotSpecificBindings() {
-    }
-
-    @Override
-    protected String getCharSubsystem() {
-        return null ;
-    }
-
-    protected String getCharMotor() {
-        return null ;
     }
 }
