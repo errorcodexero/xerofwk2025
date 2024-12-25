@@ -8,8 +8,6 @@ import org.xero1425.base.XeroContainer;
 import org.xero1425.base.XeroRobot;
 import org.xero1425.simulator.engine.ModelFactory;
 import org.xero1425.simulator.engine.SimulationEngine;
-import frc.robot.commands.automodes.competition.DriveStraight;
-import frc.robot.commands.automodes.competition.VisionTest;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,40 +36,59 @@ public class Robot extends XeroRobot {
 
     @Override
     public XeroContainer createContainer() {
+        //
+        // TODO: update the robot container to include the specific subsystems
+        //       for this year's robot.
+        //
         return new RobotContainer(this) ;
     }
 
     public String getName() {
+        //
+        // TODO: change the name of the robot to match this year's robot
+        //
         return "TemplateRobot" ;
-    }
-
-    public boolean isCharMode() {
-        return false ;
     }
 
     @Override
     public String getPracticeSerialNumber() {
+        //
+        // TODO: if we build two robots, return the serial number for the RoboRio on the
+        //       practice bot here.  This will cause the drive base to pick up the parameters
+        //       for the practice bot.
+        //
         return null;
     }
 
     @Override
     public void createCompetitionAutoModes() {
-        addAutoMode(new VisionTest(this)) ;
-        addAutoMode(new DriveStraight(this));
+        //
+        // TODO: add an instance of each auto mode you want to show up in the auto mode
+        //       selector on the Shuffleboard or the Elastic display.
+        //
     }
 
     @Override
     public String getSimulationFileName() {
+        //
+        // TODO: return the name of the simulation file to run
+        //
         return "oiled" ;
     }
 
     @Override
     public String getSimulationAutoMode() {
+        //
+        // TODO: return the name of the auto mode to run while simulating
+        //
         return "LEDTest" ;
     }
 
     @Override
     public void addRobotSimulationModels() {
+        //
+        // TODO: add any simulation models that simulate this years robot subsystems
+        //
         ModelFactory factory = SimulationEngine.getInstance().getModelFactory();
         factory.registerModel("robot-oi", "frc.models.RobotOIModel");         
     }

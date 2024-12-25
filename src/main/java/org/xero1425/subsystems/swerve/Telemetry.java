@@ -1,7 +1,5 @@
 package org.xero1425.subsystems.swerve;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;

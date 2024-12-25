@@ -43,6 +43,7 @@ public abstract class XeroRobot extends LoggedRobot {
         if (robot_ != null) {
             throw new RuntimeException("XeroRobot is a singleton class");
         }
+        
         robot_ = this;
         subsystems_ = new HashMap<>();
         periodic_times_ = new HashMap<>();
@@ -69,8 +70,6 @@ public abstract class XeroRobot extends LoggedRobot {
             }
         }
     }
-
-    public abstract boolean isCharMode();
 
     public abstract String getSimulationFileName();
 

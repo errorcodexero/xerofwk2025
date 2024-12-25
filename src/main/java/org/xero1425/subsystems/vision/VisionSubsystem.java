@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package org.xero1425.subsystems.vision;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import frc.robot.commons.PolynomialRegression;
+import frc.robot.constants.VisionConstants;
 
 public class VisionSubsystem extends XeroSubsystem {
 
@@ -105,76 +105,23 @@ public class VisionSubsystem extends XeroSubsystem {
             double xyStdDev ;
             double thetaStdDev ;
 
-            // The units here are unclear
-            double avgdist = poseest.avgTagDist ;
-
             if (poseest.tagCount != 0) {
                 if (poseest.tagCount > 1) {
-                    // xyStdDev = 0.001 ;
-                    xyStdDev = 0.7;
-                    thetaStdDev = 9999 ;
+                    xyStdDev = VisionConstants.MultiTagXyStdDev ;
+                    thetaStdDev = VisionConstants.MultiTagThetaStdDev ;
                 }
                 else {
-                    // xyStdDev = 0.0131 * avgdist * avgdist - 0.0278 * avgdist ;
-                    xyStdDev = 9999;
-                    thetaStdDev = 9999;
+                    //
+                    // TODO: Here most good teams have a quadratic equation mapping the tag distance
+                    //       to the standard deviation value.
+                    //
+                    xyStdDev = VisionConstants.SingleTagXyStdDev ;
+                    thetaStdDev = VisionConstants.SingleTagThetaStdDev ;
                 }
 
                 ret = new VisionEstimate(poseest.pose, poseest.timestampSeconds, xyStdDev, thetaStdDev) ;
-                Logger.recordOutput("limelight/avgdist", avgdist) ;
-                Logger.recordOutput("limelight/xyStdDev", xyStdDev);
-                Logger.recordOutput("limelight/angularStdDev", thetaStdDev);
-                Logger.recordOutput("limelight/ts", poseest.timestampSeconds);
-                Logger.recordOutput("limelight/tagcnt", poseest.tagCount) ;
-                Logger.recordOutput("limelight/tx", poseest.pose.getX()) ;
-                Logger.recordOutput("limelight/ty", poseest.pose.getY()) ;
-
                 lastTimestamp = poseest.timestampSeconds;
             }
-        }
-
-        return ret ;
-    }
-
-    private PolynomialRegression xyStdDevModel =
-    new PolynomialRegression(
-        new double[] {
-        0.752358, 1.016358, 1.296358, 1.574358, 1.913358, 2.184358, 2.493358, 2.758358,
-        3.223358, 4.093358, 4.726358
-        },
-        new double[] {0.005, 0.0135, 0.016, 0.038, 0.0515, 0.0925, 0.12, 0.14, 0.17, 0.27, 0.38},
-        2);
-
-private PolynomialRegression thetaStdDevModel =
-    new PolynomialRegression(
-        new double[] {
-        0.752358, 1.016358, 1.296358, 1.574358, 1.913358, 2.184358, 2.493358, 2.758358,
-        3.223358, 4.093358, 4.726358
-        },
-        new double[] {0.008, 0.027, 0.015, 0.044, 0.04, 0.078, 0.049, 0.027, 0.059, 0.029, 0.068},
-        1);
-
-    private VisionEstimate useBreadApproach() {
-        VisionEstimate ret = null ;
-
-        PoseEstimate poseest = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(llname_);
-        if (poseest.timestampSeconds != lastTimestamp) {
-            double xyStdDev ;
-            double thetaStdDev ;
-
-            // The units here are unclear
-            double avgdist = poseest.avgTagDist ;
-
-            if (poseest.tagCount > 1) {
-                xyStdDev = Math.pow(avgdist, 2.0) / poseest.tagCount ;
-                thetaStdDev = Math.pow(avgdist, 2.0) / poseest.tagCount ;
-            }
-            else {
-                xyStdDev = xyStdDevModel.predict(avgdist) ;
-                thetaStdDev = thetaStdDevModel.predict(avgdist) ;
-            }
-
-            ret = new VisionEstimate(poseest.pose, poseest.timestampSeconds, xyStdDev, thetaStdDev) ;
         }
 
         return ret ;

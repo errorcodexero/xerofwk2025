@@ -81,6 +81,10 @@ public class HolonomicPathFollower {
         did_timeout_ = false ;
     }
 
+    public String getName() {
+        return this.path_name_ ;
+    }
+
     //
     // Returns the distance along the current path in meters
     //

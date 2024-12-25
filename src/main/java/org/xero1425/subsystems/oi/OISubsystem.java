@@ -69,6 +69,10 @@ public abstract class OISubsystem extends XeroSubsystem {
         buttons_ = new HashMap<>();
     }
 
+    public int gamePort() {
+        return this.gp_port_ ;
+    }
+
     //
     // This method enables the gamepad for driving
     //

@@ -2,13 +2,11 @@ package frc.robot;
 
 import org.xero1425.base.XeroContainer;
 import org.xero1425.base.XeroRobot;
+import org.xero1425.subsystems.vision.VisionSubsystem;
 
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.RobotOISubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer extends XeroContainer {
-    private IntakeSubsystem intake_ ;
     private VisionSubsystem vision_ ;
 
     public RobotContainer(XeroRobot robot) {
@@ -20,11 +18,6 @@ public class RobotContainer extends XeroContainer {
         super(robot, new RobotOISubsystem(robot)) ;
 
         vision_ = new VisionSubsystem(robot, "") ;
-        intake_ = new IntakeSubsystem(robot) ;
-    }
-
-    public IntakeSubsystem getIntake() {
-        return intake_ ;
     }
 
     public VisionSubsystem getVision() {
