@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
 import org.xero1425.math.Pose2dWithRotation;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -124,6 +125,9 @@ public class HolonomicPathFollower {
         pts.add(dest) ;
         traj_ = TrajectoryGenerator.generateTrajectory(pts, config);
 
+        // Trajectory logging
+        Logger.recordOutput("db/current_trajectory", traj_);
+
         driving_ = true ;
         last_pos_ = start_pose_.getTranslation() ;
     }
@@ -173,6 +177,9 @@ public class HolonomicPathFollower {
                     did_timeout_ = true ;
                     driving_ = false ;
                     output_.accept(new ChassisSpeeds()) ;                
+                }
+                if (!driving_) {
+                    Logger.recordOutput("db/current_trajectory", "");
                 }
             }
             
