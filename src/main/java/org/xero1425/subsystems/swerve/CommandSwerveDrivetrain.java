@@ -2,19 +2,27 @@ package org.xero1425.subsystems.swerve;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
-import org.xero1425.base.HolonomicPathFollower;
-import org.xero1425.math.Pose2dWithRotation;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,6 +30,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -29,8 +38,11 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.constants.PathFollowingConstants ;
+import edu.wpi.first.units.measure.Distance ;
+
 import frc.robot.constants.SwerveConstants;
+import frc.robot.constants.PathFollowingConstants.RotCtrl;
+import frc.robot.constants.PathFollowingConstants.XYCtrl;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -40,9 +52,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-
-    // Path follower for this drive base
-    private HolonomicPathFollower follower_ ;   
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
@@ -130,6 +139,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
      */
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants... modules) {
         super(drivetrainConstants, modules);
+        configureDriveMotorCurrentLimits() ;
+        configurePathPlanner(modules) ;
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -150,6 +161,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
      */
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants drivetrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(drivetrainConstants, OdometryUpdateFrequency, modules);
+        configureDriveMotorCurrentLimits() ;
+        configurePathPlanner(modules) ;
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -177,57 +190,75 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             Matrix<N3, N1> odometryStandardDeviation, Matrix<N3, N1> visionStandardDeviation,
             SwerveModuleConstants... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
+        configureDriveMotorCurrentLimits() ;
+        configurePathPlanner(modules) ;
         if (Utils.isSimulation()) {
             startSimThread();
         }
     }
 
-    public void stopPath() {
-        this.stopPath(true) ;
-    }
-
-    public void stopPath(boolean stopdb) {
-        if (stopdb) {
-            setControl(new ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds())) ;
+    //
+    // Apply current limits to the drive motors in the swerve base.  The actual limits
+    // are robot specific and are therefore in the SwerveConstants file.
+    //
+    private void configureDriveMotorCurrentLimits() {
+        for(int i = 0 ; i < 4 ; i++) {
+            TalonFX dm = this.getModule(i).getDriveMotor() ;
+            TalonFXConfigurator cfg = dm.getConfigurator() ;
+            CurrentLimitsConfigs cfgs =  new CurrentLimitsConfigs()
+                .withSupplyCurrentLimit(SwerveConstants.kDriveMotorCurrentLimit)
+                .withSupplyCurrentLimitEnable(true) ;
+            cfg.apply(cfgs) ;
         }
-        follower_ = null ;
     }
 
-    private HolonomicPathFollower.Config createHolonimicPathFollowerConfig() {
-        HolonomicPathFollower.Config cfg = new HolonomicPathFollower.Config() ;
-
-        cfg.max_rot_velocity = SwerveConstants.kMaxRotationalSpeed ;
-        cfg.max_rot_acceleration = SwerveConstants.kMaxRotationalAccel ;
-
-        cfg.rot_p = PathFollowingConstants.RotCtrl.kP ;
-        cfg.rot_i = PathFollowingConstants.RotCtrl.kI ;
-        cfg.rot_d = PathFollowingConstants.RotCtrl.kD ;
-
-        cfg.x_d = PathFollowingConstants.XCtrl.kD ;
-        cfg.x_i = PathFollowingConstants.XCtrl.kI ;
-        cfg.x_p = PathFollowingConstants.XCtrl.kP ;
-
-        cfg.y_d = PathFollowingConstants.YCtrl.kD ;
-        cfg.y_i = PathFollowingConstants.YCtrl.kI ;
-        cfg.y_p = PathFollowingConstants.YCtrl.kP ;
-
-        cfg.xytolerance = PathFollowingConstants.kXYTolerance ;
-        cfg.rot_tolerance = Rotation2d.fromDegrees(PathFollowingConstants.kAngleTolerance) ;
-
-        cfg.pose_supplier = () -> getState().Pose ;
-        cfg.output_consumer = (ChassisSpeeds spd) -> { setControl(new ApplyRobotSpeeds().withSpeeds(spd)) ; } ;
-
-        return cfg ;
-    }    
-
-
-    public void driveTo(String pathname, Pose2d[] imd, Pose2dWithRotation dest, double maxv, double maxa, double pre_rot_time, double post_rot_time, double to) {
-        follower_ = new HolonomicPathFollower(createHolonimicPathFollowerConfig());
-        follower_.driveTo(pathname, imd, dest, maxv, maxa, pre_rot_time, post_rot_time, to);
+    private void driveRobot(ChassisSpeeds speeds, DriveFeedforwards ff) {
+        setControl(new ApplyRobotSpeeds().withSpeeds(speeds)) ;
     }
 
-    public boolean isFollowingPath() {
-        return follower_ != null ;
+    private boolean shouldFlipPaths() {
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+    }
+
+    private void configurePathPlanner(SwerveModuleConstants... modules) {
+
+        PPHolonomicDriveController ctrl = new PPHolonomicDriveController(
+            new PIDConstants(XYCtrl.kP, XYCtrl.kI, XYCtrl.kD),
+            new PIDConstants(RotCtrl.kP, RotCtrl.kI, RotCtrl.kD)) ;
+
+        Distance trackWidth = Meters.of(modules[0].LocationY - modules[1].LocationY) ;
+        Distance trackLength = Meters.of(modules[0].LocationX - modules[2].LocationX) ;
+
+        ModuleConfig mconfig = new ModuleConfig(
+            Meters.of(modules[0].WheelRadius),                      // The radius of the wheel
+            MetersPerSecond.of(modules[0].SpeedAt12Volts),          // The speed of the wheel at 12 v drive voltage
+            SwerveConstants.wheelCOF,                               // The coefficient of friction between the wheel and the carpet
+            DCMotor.getKrakenX60(1),                      // The DC motor characteristics of the drive motor
+            SwerveConstants.kDriveMotorCurrentLimit,                // The current limit for the drive motor
+            1                                             // The number of drive motors (should be 1)
+        ) ;
+
+        RobotConfig rconfig = new RobotConfig(
+            SwerveConstants.kRobotMass,                             // The mass of the robot
+            SwerveConstants.kRobotMOI,                              // The moment of inertia for the robot
+            mconfig,                                                // The configuration of a module
+            trackWidth,                                             // The width of the robot (left module to right module distance)
+            trackLength                                             // The length of the robot (front module to back module distance)
+        ) ;
+
+        AutoBuilder.configure(
+            () -> { return this.getState().Pose ; },                // Return the current pose of the robot
+            (pose) -> { this.resetPose(pose) ; },                   // Set the pose of the robot for paths that force the robot pose to the start of the path
+            () -> { return this.getState().Speeds ; },              // Return the robot relative, chassis speeds for the robot
+            this::driveRobot,                                       // Apply chassis speeds (and optionally feed forwards) to the robot
+            ctrl,                                                   // The controller to actually follow the path
+            rconfig,                                                // The pyhsical configuration of the robot (width, length, weight, etc.)
+            this::shouldFlipPaths,                                  // If true, mirror paths because we are the red alliance
+            this) ;                                                 // The actual subsystem for the drive base, used for setting command requirements
     }
 
     /**
@@ -282,19 +313,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             });
         }
 
-        if (follower_ != null) {
-            follower_.execute() ;
-            if (!follower_.isDriving()) {
-                follower_ = null ;
-            }
-        }
-
         Pose2d p = this.getState().Pose ;
         Logger.recordOutput("db/pose", p) ;
         Logger.recordOutput("db/angle", p.getRotation().getDegrees()) ;
         Logger.recordOutput("db/module_states", this.getState().ModuleStates) ;
         Logger.recordOutput("db/module_targets", this.getState().ModuleTargets) ;
-
     }
 
     private void startSimThread() {
