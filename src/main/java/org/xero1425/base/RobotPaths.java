@@ -13,7 +13,7 @@ public class RobotPaths
     /// \brief create the robot paths object
     /// \param simulator if true we are running under the simulator
     /// \param name the name of the robot
-    RobotPaths(boolean simulator, String name) {
+    RobotPaths(boolean simulator) {
         if (simulator)
         {
             log_file_directory_ = "logs" ;
@@ -43,5 +43,4 @@ public class RobotPaths
     String pathsDirectory() {
         return deploy_directory_ + "/paths" ;
     }
-
 } ;

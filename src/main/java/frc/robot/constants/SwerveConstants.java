@@ -11,8 +11,8 @@ public class SwerveConstants {
     public static final double kRotateP = 5.0 ;
     public static final double SlowFactor = 0.1 ;
 
-    public static final Mass kRobotMass = Units.Kilograms.of(1.0) ;
-    public static final MomentOfInertia kRobotMOI = Units.KilogramSquareMeters.of(1.0) ;
+    public static final Mass kRobotMass = Units.Kilograms.of(68.0) ;
+    public static final MomentOfInertia kRobotMOI = Units.KilogramSquareMeters.of(4.51) ;
     public static final double wheelCOF = 1.0 ;
-    public static final Current kDriveMotorCurrentLimit = Units.Amps.of(60.0) ;
+    public static final Current kDriveMotorCurrentLimit = Units.Amps.of(80.0) ;
 }

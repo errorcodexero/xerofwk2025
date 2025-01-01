@@ -212,8 +212,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         }
     }
 
+    private ApplyRobotSpeeds speeds_ = new ApplyRobotSpeeds() ;
     private void driveRobot(ChassisSpeeds speeds, DriveFeedforwards ff) {
-        setControl(new ApplyRobotSpeeds().withSpeeds(speeds)) ;
+        Logger.recordOutput("Speeds", speeds) ;
+        setControl(speeds_.withSpeeds(speeds)) ;
     }
 
     private boolean shouldFlipPaths() {
@@ -224,25 +226,25 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return false;
     }
 
-    private void configurePathPlanner(SwerveModuleConstants... modules) {
+    private RobotConfig getRobotConfig(SwerveModuleConstants... modules) {
 
-        PPHolonomicDriveController ctrl = new PPHolonomicDriveController(
-            new PIDConstants(XYCtrl.kP, XYCtrl.kI, XYCtrl.kD),
-            new PIDConstants(RotCtrl.kP, RotCtrl.kI, RotCtrl.kD)) ;
+        RobotConfig rconfig = null ;
 
         Distance trackWidth = Meters.of(modules[0].LocationY - modules[1].LocationY) ;
         Distance trackLength = Meters.of(modules[0].LocationX - modules[2].LocationX) ;
+        double gratio = modules[0].DriveMotorGearRatio ;
+        DCMotor motor = DCMotor.getKrakenX60(1).withReduction(gratio) ;
 
         ModuleConfig mconfig = new ModuleConfig(
             Meters.of(modules[0].WheelRadius),                      // The radius of the wheel
             MetersPerSecond.of(modules[0].SpeedAt12Volts),          // The speed of the wheel at 12 v drive voltage
             SwerveConstants.wheelCOF,                               // The coefficient of friction between the wheel and the carpet
-            DCMotor.getKrakenX60(1),                      // The DC motor characteristics of the drive motor
-            SwerveConstants.kDriveMotorCurrentLimit,                // The current limit for the drive motor
+            motor,                                                  // The DC motor characteristics of the drive motor
+            Amps.of(modules[0].SlipCurrent),                        // The stator current where the wheels will slip
             1                                             // The number of drive motors (should be 1)
         ) ;
 
-        RobotConfig rconfig = new RobotConfig(
+        rconfig = new RobotConfig(
             SwerveConstants.kRobotMass,                             // The mass of the robot
             SwerveConstants.kRobotMOI,                              // The moment of inertia for the robot
             mconfig,                                                // The configuration of a module
@@ -250,13 +252,22 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             trackLength                                             // The length of the robot (front module to back module distance)
         ) ;
 
+        return rconfig ;
+    }
+
+    private void configurePathPlanner(SwerveModuleConstants... modules) {
+
+        PPHolonomicDriveController ctrl = new PPHolonomicDriveController(
+            new PIDConstants(XYCtrl.kP, XYCtrl.kI, XYCtrl.kD),
+            new PIDConstants(RotCtrl.kP, RotCtrl.kI, RotCtrl.kD)) ;
+
         AutoBuilder.configure(
             () -> { return this.getState().Pose ; },                // Return the current pose of the robot
             (pose) -> { this.resetPose(pose) ; },                   // Set the pose of the robot for paths that force the robot pose to the start of the path
             () -> { return this.getState().Speeds ; },              // Return the robot relative, chassis speeds for the robot
             this::driveRobot,                                       // Apply chassis speeds (and optionally feed forwards) to the robot
             ctrl,                                                   // The controller to actually follow the path
-            rconfig,                                                // The pyhsical configuration of the robot (width, length, weight, etc.)
+            getRobotConfig(modules),                                // The pyhsical configuration of the robot (width, length, weight, etc.)
             this::shouldFlipPaths,                                  // If true, mirror paths because we are the red alliance
             this) ;                                                 // The actual subsystem for the drive base, used for setting command requirements
     }

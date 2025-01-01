@@ -11,10 +11,10 @@
                     "instance" : "1",
                     "values" : 
                     {
-                        "start" : 10,
-                        "autonomous" : 15.0,
+                        "start" : 1,
+                        "autonomous" : 30,
                         "between" : 0.0,
-                        "teleop" : 100.0,
+                        "teleop" : 0.0,
                         "fms" : false,
                         "ds" : true
                     }

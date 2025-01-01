@@ -25,6 +25,7 @@ public abstract class XeroRobot extends LoggedRobot {
 
     private static XeroRobot robot_ = null;
 
+    private RobotPaths filesystem_paths_ ;
     private XeroAutoCommand auto_mode_;
     private List<XeroAutoCommand> automodes_;
     private SendableChooser<XeroAutoCommand> chooser_;
@@ -48,6 +49,8 @@ public abstract class XeroRobot extends LoggedRobot {
         subsystems_ = new HashMap<>();
         periodic_times_ = new HashMap<>();
 
+        filesystem_paths_ = new RobotPaths(RobotBase.isSimulation()) ;
+
         auto_modes_created_ = false;
         automodes_ = new ArrayList<>();
         auto_mode_ = null;
@@ -69,6 +72,10 @@ public abstract class XeroRobot extends LoggedRobot {
                 SimulationEngine.getInstance().initAll(str);
             }
         }
+    }
+
+    public RobotPaths getFileSystemPaths() {
+        return filesystem_paths_ ;
     }
 
     public abstract String getSimulationFileName();

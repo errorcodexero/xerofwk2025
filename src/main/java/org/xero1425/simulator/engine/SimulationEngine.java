@@ -15,8 +15,8 @@ public class SimulationEngine {
     public static final String NetworkTableName = "XeroSim" ;
     private static SimulationEngine the_one_ = null ;
 
-    private MessageLogger logger_ ;
     private XeroRobot robot_ ;
+    private MessageLogger logger_ ;
     private int logger_id_ ;
 
     private ModelManager models_ ;
@@ -27,6 +27,8 @@ public class SimulationEngine {
     private int passed_count_ ;    
 
     private SimulationEngine(XeroRobot robot) {
+        logger_ = MessageLogger.getTheMessageLogger() ;
+
         robot_ = robot ;
         logger_id_ = logger_.registerSubsystem(LoggerName);
 

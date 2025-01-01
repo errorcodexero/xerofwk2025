@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.commands.automodes.competition.PathPlannerTest ;
+
 import org.xero1425.base.XeroContainer;
 import org.xero1425.base.XeroRobot;
 import org.xero1425.simulator.engine.ModelFactory;
@@ -66,6 +68,7 @@ public class Robot extends XeroRobot {
         // TODO: add an instance of each auto mode you want to show up in the auto mode
         //       selector on the Shuffleboard or the Elastic display.
         //
+        addAutoMode(new PathPlannerTest(this)) ;
     }
 
     @Override
@@ -73,7 +76,7 @@ public class Robot extends XeroRobot {
         //
         // TODO: return the name of the simulation file to run
         //
-        return "oiled" ;
+        return "automode" ;
     }
 
     @Override
@@ -81,7 +84,7 @@ public class Robot extends XeroRobot {
         //
         // TODO: return the name of the auto mode to run while simulating
         //
-        return "LEDTest" ;
+        return "PathPlannerTest" ;
     }
 
     @Override
