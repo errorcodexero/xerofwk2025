@@ -11,10 +11,10 @@ import frc.robot.RobotContainer;
 public class VisionTest extends XeroAutoCommand {
     
     private final static String desc = "This auto mode is used to test vision accuracy" ;
-    private final static double max1v = 1.0 ;
-    private final static double max1a = 1.0 ;
-    private final static double max2v = 1.0 ;
-    private final static double max2a = 1.0 ;
+    private final static double max1v = 3.0 ;
+    private final static double max1a = 2.0 ;
+    private final static double max2v = 3.0 ;
+    private final static double max2a = 2.0 ;
 
     private Pose2dWithRotation dest1_ ;
     private Pose2dWithRotation dest2_ ;

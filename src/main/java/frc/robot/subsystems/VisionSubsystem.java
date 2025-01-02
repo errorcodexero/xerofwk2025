@@ -68,6 +68,8 @@ public class VisionSubsystem extends XeroSubsystem {
     public void periodic() {
         startPeriodic();
 
+        Logger.recordOutput("limelight/enabled", enabled_);
+
         if (enabled_) {
             CommandSwerveDrivetrain dt = getRobot().getContainer().getDriveBase() ;
 
@@ -119,6 +121,7 @@ public class VisionSubsystem extends XeroSubsystem {
                     xyStdDev = 9999;
                     thetaStdDev = 9999;
                 }
+                xyStdDev = 0.7;
 
                 ret = new VisionEstimate(poseest.pose, poseest.timestampSeconds, xyStdDev, thetaStdDev) ;
                 Logger.recordOutput("limelight/avgdist", avgdist) ;
